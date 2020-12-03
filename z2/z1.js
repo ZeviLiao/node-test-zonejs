@@ -1,23 +1,19 @@
-
-// require('zone.js/dist/zone-node.js');
-
-function f1() {
-    console.log("F1");
-}
-function f2() {
-    console.log("F2");
-}
-function MyZone() {
-    f1(); // Sync
-    setTimeout(f2, 500); //Async
+function main() {
+    b1.addEventListener('click', bindSecondButton);
 }
 
-var z = Zone.current.fork({
-    onHasTask: function (parent, current, target, hasTask) {
-        console.timeLog();
+function bindSecondButton() {
+    b2.addEventListener('click', throwError);
+}
+
+function throwError() {
+    throw new Error('aw shucks');
+}
+
+Zone.current.fork(
+    {
+        onHandleError: function (parentZoneDelegate, currentZone, targetZone, error) {
+            console.log(error.stack);
+        }
     }
-});
-console.time();
-z.run(function () {
-    MyZone();
-});
+).fork(Zone.longStackTraceZoneSpec).run(main);
