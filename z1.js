@@ -1,5 +1,5 @@
 
-require('zone.js/dist/zone-node.js');
+// require('zone.js/dist/zone-node.js');
 
 function f1() {
     console.log("F1");
@@ -9,13 +9,13 @@ function f2() {
 }
 function MyZone() {
     f1(); // Sync
-    setTimeout(f2, 5000); //Async
+    setTimeout(f2, 500); //Async
 }
 
 var z = Zone.current.fork({
     onHasTask: function (parent, current, target, hasTask) {
-    console.timeLog();
-}
+        console.timeLog();
+    }
 });
 console.time();
 z.run(function () {
